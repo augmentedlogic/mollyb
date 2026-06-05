@@ -91,7 +91,7 @@ public class MollybService {
             sslContext.init(keyManagerFactory.getKeyManagers(), factory.getTrustManagers(), null);
 
             SSLServerSocketFactory ssfactory = sslContext.getServerSocketFactory();
-            ServerSocket listener = ssfactory.createServerSocket(1965, 5000, InetAddress.getByName("localhost"));
+            ServerSocket listener = ssfactory.createServerSocket(this.port, 5000, InetAddress.getByName(this.bind_to));
             SSLServerSocket sslListener = (SSLServerSocket) listener;
             sslListener.setNeedClientAuth(false);
             sslListener.setEnabledProtocols(new String[] {"TLSv1.2", "TLSv1.3"});
