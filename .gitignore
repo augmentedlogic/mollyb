@@ -15,3 +15,13 @@ buildNumber.properties
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
+WORK/
+OLD/
+certs/
+keystore.jks
+config/config.ini
+tests/
+webroot/
+log/
+service.sh
+private/

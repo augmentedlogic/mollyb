@@ -1,0 +1,12 @@
+[service]
+port = 1965
+bind = localhost
+webroot = /var/www
+
+; setting a logfile is optional
+logfile = /path/to/access.log
+
+[security]
+keystore = /path/to/keystore.jks
+password = mysecret
+
