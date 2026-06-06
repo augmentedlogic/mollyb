@@ -47,7 +47,7 @@ see the certifcates.sh in the scripts/ folder.
 ### starting the server
 
 ```
-java -jar target/mollyb-server /path/to/your/config.ini
+java -jar target/mollyb-server.jar /path/to/your/config.ini
 ```
 
 ### Does it work?
