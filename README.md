@@ -12,7 +12,7 @@ mollyb is a basic gemini protocol server written in java, without dependencies.
 
 * serves media files of type image/jpeg, image/png and image/gif
 
-* serves fedd/xml files
+* serves feed/xml files
 
 * writes a basic access log (if so configured)
 
