@@ -24,6 +24,26 @@ public class MollybToolkit {
     }
 
 
+    public static Boolean isMediaFile(String got_path) {
+        if(got_path.toLowerCase().endsWith(".jpg")
+                || got_path.toLowerCase().endsWith(".jpeg")
+                || got_path.toLowerCase().endsWith(".png")
+                || got_path.toLowerCase().endsWith(".gif")) {
+            return true;
+        }
+        return false;
+    }
+
+    public static String getMediaContentType(String path) throws IOException {
+        String mime = null;
+        try {
+            mime = Files.probeContentType(Paths.get(path));
+        } catch(Exception e) {
+            // Only for debug
+        }
+        return mime;
+    }
+
     public static Boolean fileExists(String filePathString) {
         File f = new File(filePathString);
         if(f.exists() && !f.isDirectory()) {

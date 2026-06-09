@@ -29,6 +29,10 @@ public class Response {
     public static final String NOT_FOUND = "51 text/gemini";
     public static final String SERVER_ERROR = "40 text/gemini";
     public static final String BAD_REQUEST = "59 text/gemini";
+    public static final String MEDIA_JPEG = "image/jpg";
+    public static final String MEDIA_PNG = "image/png";
+    public static final String MEDIA_GIF = "image/gif";
+
     private long filesize = 0;
 
 
