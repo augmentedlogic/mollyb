@@ -56,6 +56,7 @@ class ServiceThread implements Runnable {
             String final_path = null;
             String got_path = null;
             Boolean is_media = false;
+            Boolean is_feed = false;
 
             // setting the remote_address
             String remote_address=(((InetSocketAddress) this.socket.getRemoteSocketAddress()).getAddress()).toString().replace("/","");
@@ -101,6 +102,9 @@ class ServiceThread implements Runnable {
                 } else if (MollybToolkit.isMediaFile(got_path) == true) {
                     is_media = true;
                     final_path = this.webroot + got_path;
+                } else if (got_path.endsWith(".xml")) {
+                    is_feed = true;
+                    final_path = this.webroot + got_path;
                 } else {
                     final_path = this.webroot + got_path + "/index.gmi";
                 }
@@ -120,6 +124,15 @@ class ServiceThread implements Runnable {
                     String header = "20 " + media_mimetype + "\r\n";
                     data_out.write(header.getBytes(StandardCharsets.UTF_8));
                     Files.copy(Paths.get(final_path), data_out);
+                } else if(is_feed == true) {
+                    Response response = new Response();
+                    //out.print(Response.OK + "\r\n");
+                    out.print("20 text/xml\r\n");
+                    ArrayList<String> payload = response.getPayload(final_path);
+                    payload_size = response.getPayloadSize();
+                    for( String line : payload) {
+                        out.print(line);
+                    }
                 } else {
                     Response response = new Response();
                     out.print(Response.OK + "\r\n");
