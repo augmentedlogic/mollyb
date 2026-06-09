@@ -6,17 +6,17 @@ mollyb is a basic gemini protocol server written in java, without dependencies.
 
 * serves .gmi files
 
-* automatically looks for index.gmi in a folder
+* automatically looks for index.gmi in a directory
 
 * uses TLS (1.2 or 1.3)
+
+* serves media files of type image/jpeg, image/png and image/gif
 
 * writes a basic access log (if so configured)
 
 * returns a decent "File not found" page if file or path does not exist
 
 ## currently unsupported features
-
-* does currently not serve images or other media files. (likely to be added at some point)
 
 * does not handle interactive stuff (not so likely to be added)
 
