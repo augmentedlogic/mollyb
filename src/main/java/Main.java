@@ -73,7 +73,7 @@ public class Main {
 
             // all is good
             System.out.println("\n");
-            System.out.println("Starting mollyb at " + bind + ":" + port);
+            System.out.println("Starting mollyb " + MollybService.VERSION + " at " + bind + ":" + port);
 
 
         } catch(Exception e) {

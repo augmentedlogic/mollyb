@@ -92,7 +92,7 @@ class ServiceThread implements Runnable {
             } else {
                 // DEBUG ONLY
                 if(this.debug == true) {
-                    System.out.println(requestLine);
+                    new LogTool().debug(requestLine);
                 }
 
                 String replaced = requestLine.replace("gemini:", "http:");
@@ -101,9 +101,9 @@ class ServiceThread implements Runnable {
                 if(this.debug == true) {
                     Request request = new Request();
                     request.processRequest(remote_address, replaced);
-                    System.out.println("PATH: " + request.getPath());
-                    System.out.println("QUERY: " + request.getQuery());
-                    System.out.println("REMOTE: " + request.getRemoteAddress());
+                    new LogTool().debug("PATH: " + request.getPath());
+                    new LogTool().debug("QUERY: " + request.getQuery());
+                    new LogTool().debug("REMOTE: " + request.getRemoteAddress());
                 }
 
                 got_path = MollybToolkit.extractPath(new URL(replaced));
@@ -125,8 +125,8 @@ class ServiceThread implements Runnable {
 
                 // DEBUG ONLY
                 if(this.debug == true) {
-                    System.out.println("LOOKUP:" + final_path);
-                    System.out.println("MEDIA: " + is_media);
+                    new LogTool().debug("LOOKUP:" + final_path);
+                    new LogTool().debug("MEDIA: " + is_media);
                 }
 
                 if(!MollybToolkit.fileExists(final_path)) {
@@ -168,7 +168,7 @@ class ServiceThread implements Runnable {
                     data_out.close();
                 } catch(Exception doe) {
                     if(this.debug == true) {
-                        System.out.println(doe);
+                        new LogTool().debug(doe.getMessage());
                     }
                 }
 
@@ -176,7 +176,7 @@ class ServiceThread implements Runnable {
                     out.close();
                 } catch(Exception oe) {
                     if(this.debug == true) {
-                        System.out.println(oe);
+                        new LogTool().debug(oe.getMessage());
                     }
                 }
 
@@ -200,7 +200,7 @@ class ServiceThread implements Runnable {
             } catch(Exception ex) {
 
                 if(this.debug == true) {
-                    System.out.println(ex);
+                    new LogTool().debug(ex.getMessage());
                 }
 
             }

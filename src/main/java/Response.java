@@ -60,7 +60,7 @@ public class Response {
             }
         } catch(Exception e) {
             // DEBUG ONLY
-            System.out.println("FILE NOT FOUND");
+            new LogTool().debug("FILE NOT FOUND");
         }
 
         return lines;

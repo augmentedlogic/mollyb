@@ -103,6 +103,14 @@ public class LogTool {
     /**
      *
      **/
+    public void debug(String msg) {
+        System.out.println(msg);
+    }
+
+
+    /**
+     *
+     **/
     public void error(Exception emsg)  {
         this.writeTo(emsg.getMessage());
     }

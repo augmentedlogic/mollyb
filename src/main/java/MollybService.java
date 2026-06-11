@@ -25,7 +25,11 @@ import java.security.KeyStore;
 import javax.net.ssl.*;
 import java.util.Properties;
 
+
 public class MollybService {
+
+
+    public static final String VERSION = "0.5";
 
     private String bind_to = "localhost";
     private int port = 8080;
