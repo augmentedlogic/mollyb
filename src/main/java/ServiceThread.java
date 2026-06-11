@@ -25,6 +25,9 @@ class ServiceThread implements Runnable {
     private int so_timeout = 20000;
     private boolean debug = false;
     private String webroot = null;
+    // for future implementation
+    private Object handler = null;
+    private LinkedHashMap<String, Object> handlers = null;
 
     @SuppressWarnings("unchecked")
     public ServiceThread(Socket socket, int so_timeout, String webroot, boolean debug) {
@@ -37,7 +40,6 @@ class ServiceThread implements Runnable {
 
     @Override
     public void run() {
-
 
         int response_status = 20;
 
@@ -57,6 +59,8 @@ class ServiceThread implements Runnable {
             String got_path = null;
             Boolean is_media = false;
             Boolean is_feed = false;
+            // for future implementation
+            Boolean custom_not_found = false;
 
             // setting the remote_address
             String remote_address=(((InetSocketAddress) this.socket.getRemoteSocketAddress()).getAddress()).toString().replace("/","");
@@ -92,6 +96,16 @@ class ServiceThread implements Runnable {
                 }
 
                 String replaced = requestLine.replace("gemini:", "http:");
+
+                // DEBUG ONLY: for future implementation
+                if(this.debug == true) {
+                    Request request = new Request();
+                    request.processRequest(remote_address, replaced);
+                    System.out.println("PATH: " + request.getPath());
+                    System.out.println("QUERY: " + request.getQuery());
+                    System.out.println("REMOTE: " + request.getRemoteAddress());
+                }
+
                 got_path = MollybToolkit.extractPath(new URL(replaced));
                 got_path = MollybToolkit.sanitizeFilePath(got_path);
 
@@ -116,7 +130,11 @@ class ServiceThread implements Runnable {
                 }
 
                 if(!MollybToolkit.fileExists(final_path)) {
-                    out.print(Response.NOT_FOUND + "\r\n");
+                    if(custom_not_found == true) {
+                        out.print(Response.OK + "\r\n");
+                    } else {
+                        out.print(Response.NOT_FOUND + "\r\n");
+                    }
                     out.print("# Page Not Found\r\n");
                     response_status = 51;
                 } else if(is_media == true) {
@@ -170,6 +188,7 @@ class ServiceThread implements Runnable {
 
         } catch (Exception e) {
             // We don't actually want to throw an error here, instead we will log an invalid request in the future
+
             // DEBUG ONLY
             if(this.debug == true) {
                 Thread t = Thread.currentThread();
