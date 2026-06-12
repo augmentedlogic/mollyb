@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.augmentedlogic.mollyb</groupId>
   <artifactId>mollyb</artifactId>
-  <version>0.5</version>
+  <version>0.6</version>
   <name>mollyb</name>
   <description>a basic gemini protocol server</description>
   <url>https://developer.augmentedlogic.com</url>
