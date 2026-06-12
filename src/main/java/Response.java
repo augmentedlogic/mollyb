@@ -29,11 +29,14 @@ public class Response {
     public static final String NOT_FOUND = "51 text/gemini";
     public static final String SERVER_ERROR = "40 text/gemini";
     public static final String BAD_REQUEST = "59 text/gemini";
-    public static final String MEDIA_JPEG = "image/jpg";
+    public static final String MEDIA_JPEG = "image/jpeg";
     public static final String MEDIA_PNG = "image/png";
     public static final String MEDIA_GIF = "image/gif";
 
     private long filesize = 0;
+    private String mimetype = "text/gemini";
+    private int status_code = 20;
+    private ArrayList<String> payload_lines = new ArrayList<String>();
 
 
     private long getFileSize(String filepath) {
@@ -46,7 +49,36 @@ public class Response {
         return this.filesize;
     }
 
-    public ArrayList<String> getPayload(String filepath) throws Exception {
+    public void setMimetype(String mimetype) {
+        this.mimetype = mimetype;
+    }
+
+
+    public void setStatusCode(int status_code) {
+        this.status_code = status_code;
+    }
+
+
+    public void addBody(String line) {
+        this.payload_lines.add(line + "\r\n");
+    }
+
+
+    public int getStatusCode() {
+        return this.status_code;
+    }
+
+
+    public String getMimetype() {
+        return this.mimetype;
+    }
+
+
+    public ArrayList<String> getBody() {
+        return this.payload_lines;
+    }
+
+    public ArrayList<String> getStaticPayload(String filepath) throws Exception {
 
         this.filesize = this.getFileSize(filepath);
 

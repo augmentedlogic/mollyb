@@ -30,9 +30,10 @@ class ServiceThread implements Runnable {
     private LinkedHashMap<String, Object> handlers = null;
 
     @SuppressWarnings("unchecked")
-    public ServiceThread(Socket socket, int so_timeout, String webroot, boolean debug) {
+    public ServiceThread(Socket socket, int so_timeout, String webroot, LinkedHashMap handlers, boolean debug) {
         this.socket = socket;
         this.debug = debug;
+        this.handlers = handlers;
         this.webroot = webroot;
         this.so_timeout = so_timeout;
     }
@@ -65,6 +66,33 @@ class ServiceThread implements Runnable {
             // setting the remote_address
             String remote_address=(((InetSocketAddress) this.socket.getRemoteSocketAddress()).getAddress()).toString().replace("/","");
 
+
+            String replaced = requestLine.replace("gemini:", "http:");
+            // DEBUG ONLY: for future implementation
+            Request request = new Request();
+            request.processRequest(remote_address, replaced);
+
+            if(this.debug == true) {
+                new LogTool().debug("PATH: " + request.getPath());
+                new LogTool().debug("QUERY: " + request.getQuery());
+                new LogTool().debug("REMOTE: " + request.getRemoteAddress());
+            }
+
+            // the routing decision
+            String handler_path = request.getPath();
+            Iterator it = this.handlers.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry pair = (Map.Entry) it.next();
+                String test_path = (String) pair.getKey();
+                if(handler_path.startsWith(test_path)) {
+                    this.handler = (Object) pair.getValue();
+                    break;
+                }
+            }
+
+
+
+
             if (requestLine == null || requestLine.length() == 0) {
 
                 response_status = 59;
@@ -95,17 +123,6 @@ class ServiceThread implements Runnable {
                     new LogTool().debug(requestLine);
                 }
 
-                String replaced = requestLine.replace("gemini:", "http:");
-
-                // DEBUG ONLY: for future implementation
-                if(this.debug == true) {
-                    Request request = new Request();
-                    request.processRequest(remote_address, replaced);
-                    new LogTool().debug("PATH: " + request.getPath());
-                    new LogTool().debug("QUERY: " + request.getQuery());
-                    new LogTool().debug("REMOTE: " + request.getRemoteAddress());
-                }
-
                 got_path = MollybToolkit.extractPath(new URL(replaced));
                 got_path = MollybToolkit.sanitizeFilePath(got_path);
 
@@ -129,7 +146,30 @@ class ServiceThread implements Runnable {
                     new LogTool().debug("MEDIA: " + is_media);
                 }
 
-                if(!MollybToolkit.fileExists(final_path)) {
+
+
+
+                Response dynamic_response = new Response();
+
+                if(this.handler != null) {
+
+                    try {
+                        Response pass_response = new Response();
+                        Class[] parameterTypes = new Class[] {Request.class, Response.class};
+                        Object[] arguments = new Object[] { request, pass_response };
+                        Method m = this.handler.getClass().getMethod("handle", parameterTypes);
+                        dynamic_response = (Response) m.invoke(this.handler, arguments);
+                        out.print(dynamic_response.getStatusCode() + " " + dynamic_response.getMimetype() + "\r\n");
+                        for( String line : dynamic_response.getBody()) {
+                            out.print(line);
+                        }
+
+                    } catch(Exception e) {
+                        Thread t = Thread.currentThread();
+                        t.getUncaughtExceptionHandler().uncaughtException(t, e);
+                    }
+
+                } else if(!MollybToolkit.fileExists(final_path)) {
                     if(custom_not_found == true) {
                         out.print(Response.OK + "\r\n");
                     } else {
@@ -137,6 +177,7 @@ class ServiceThread implements Runnable {
                     }
                     out.print("# Page Not Found\r\n");
                     response_status = 51;
+
                 } else if(is_media == true) {
                     String media_mimetype = MollybToolkit.getMediaContentType(final_path);
                     String header = "20 " + media_mimetype + "\r\n";
@@ -146,7 +187,7 @@ class ServiceThread implements Runnable {
                     Response response = new Response();
                     //out.print(Response.OK + "\r\n");
                     out.print("20 text/xml\r\n");
-                    ArrayList<String> payload = response.getPayload(final_path);
+                    ArrayList<String> payload = response.getStaticPayload(final_path);
                     payload_size = response.getPayloadSize();
                     for( String line : payload) {
                         out.print(line);
@@ -154,7 +195,7 @@ class ServiceThread implements Runnable {
                 } else {
                     Response response = new Response();
                     out.print(Response.OK + "\r\n");
-                    ArrayList<String> payload = response.getPayload(final_path);
+                    ArrayList<String> payload = response.getStaticPayload(final_path);
                     payload_size = response.getPayloadSize();
                     for( String line : payload) {
                         out.print(line);

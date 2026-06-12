@@ -15,15 +15,70 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Properties;
 
 public class ConfigParser {
 
     private Pattern _section  = Pattern.compile("\\s*\\[([^]]*)\\]\\s*");
     private Pattern _keyValue = Pattern.compile("\\s*([^=]*)=(.*)");
     private Map<String, Map<String, String>> _entries = new HashMap<>();
+    private int port = 1965;
+    private String bind = "localhost";
+    private String webroot = null;
 
     public ConfigParser(String path) throws IOException {
         load(path);
+
+
+        this.port = this.getInt("service", "port", 7777);
+        this.bind = this.getString("service", "bind", "localhost");
+        webroot = this.getString("service", "webroot", null);
+        String logfile = this.getString("service", "logfile", null);
+        String keyfile = this.getString("security", "keystore", null);
+        String password = this.getString("security", "password", null);
+
+        Properties props = System.getProperties();
+
+        // check if webroot is null
+        if(webroot == null) {
+            System.out.println("Webroot is not set. Not starting.");
+            System.exit(0);
+        }
+
+        // keyfile/keystore is required
+        if(keyfile == null) {
+            System.out.println("No keyfile given. Not starting.");
+            System.exit(0);
+        } else {
+            props.setProperty("mollyb.keyfile", keyfile);
+        }
+
+        // keystore password is required
+        if(password == null) {
+            System.out.println("No keystore password given. Not starting.");
+            System.exit(0);
+        } else {
+            props.setProperty("mollyb.password", password);
+        }
+
+
+        // only if logfile is set
+        if(logfile != null) {
+            props.setProperty("mollyb.logfile", logfile);
+        }
+
+    }
+
+    public int getPort() {
+        return this.port;
+    }
+
+    public String getBind() {
+        return this.bind;
+    }
+
+    public String getWebroot() {
+        return this.webroot;
     }
 
     public void load(String path) throws IOException {

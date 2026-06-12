@@ -37,10 +37,15 @@ public class MollybService {
     private int backlog = 100;
     private int so_timeout = 5000;
     private String webroot = null;
+    private LinkedHashMap<String, Object> handlers = new LinkedHashMap<String, Object>();
 
     public MollybService(String bind_to, int port) {
         this.port = port;
         this.bind_to = bind_to;
+    }
+
+    public void addHandler(String path, Object handler) {
+        this.handlers.put(path, handler);
     }
 
     public void setBacklog(int backlog) {
@@ -89,7 +94,7 @@ public class MollybService {
 
             while (true) {
                 int thread_count = java.lang.Thread.activeCount();
-                Runnable runnable =  new ServiceThread(sslListener.accept(), this.so_timeout, this.webroot, this.debug);
+                Runnable runnable =  new ServiceThread(sslListener.accept(), this.so_timeout, this.webroot, this.handlers, this.debug);
                 Thread thread = new Thread(runnable);
                 thread.start();
             }

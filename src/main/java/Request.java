@@ -39,22 +39,22 @@ public class Request {
         }
     }
 
-    protected String getPath() {
+    public String getPath() {
         return this.path;
     }
 
 
-    protected String getQuery() {
+    public String getQuery() {
         return this.query_string;
     }
 
 
-    protected String getRemoteAddress() {
+    public String getRemoteAddress() {
         return this.remote_address;
     }
 
 
-    protected Boolean hasQuery() {
+    public Boolean hasQuery() {
         if(this.query_string != null) {
             return true;
         }

@@ -17,9 +17,7 @@ public class Main {
 
     public static void main( String[] args ) {
 
-        int port = 1965;
-        String bind = "localhost";
-        String webroot = null;
+        ConfigParser cp = null;
 
         try {
             String configfile = null;
@@ -31,49 +29,11 @@ public class Main {
             }
 
             configfile = args[0];
-
-            ConfigParser cp = new ConfigParser(configfile);
-            port = cp.getInt("service", "port", 7777);
-            bind = cp.getString("service", "bind", "localhost");
-            webroot = cp.getString("service", "webroot", null);
-            String logfile = cp.getString("service", "logfile", null);
-            String keyfile = cp.getString("security", "keystore", null);
-            String password = cp.getString("security", "password", null);
-
-            Properties props = System.getProperties();
-
-
-            // check if webroot is null
-            if(webroot == null) {
-                System.out.println("Webroot is not set. Not starting.");
-                System.exit(0);
-            }
-
-            // keyfile/keystore is required
-            if(keyfile == null) {
-                System.out.println("No keyfile given. Not starting.");
-                System.exit(0);
-            } else {
-                props.setProperty("mollyb.keyfile", keyfile);
-            }
-
-            // keystore password is required
-            if(password == null) {
-                System.out.println("No keystore password given. Not starting.");
-                System.exit(0);
-            } else {
-                props.setProperty("mollyb.password", password);
-            }
-
-
-            // only if logfile is set
-            if(logfile != null) {
-                props.setProperty("mollyb.logfile", logfile);
-            }
+            cp = new ConfigParser(configfile);
 
             // all is good
             System.out.println("\n");
-            System.out.println("Starting mollyb " + MollybService.VERSION + " at " + bind + ":" + port);
+            System.out.println("Starting mollyb " + MollybService.VERSION + " at " + cp.getBind() + ":" + cp.getPort());
 
 
         } catch(Exception e) {
@@ -81,10 +41,10 @@ public class Main {
         }
 
 
-        MollybService ms = new MollybService(bind, port);
+        MollybService ms = new MollybService(cp.getBind(), cp.getPort());
         ms.setBacklog(4096);
         ms.setDebug(false);
-        ms.setWebroot(webroot);
+        ms.setWebroot(cp.getWebroot());
         try {
             ms.start();
         } catch(Exception e) {
