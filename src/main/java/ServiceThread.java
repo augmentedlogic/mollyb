@@ -18,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutionException;
 import java.lang.reflect.*;
 import java.lang.Object;
+import javax.net.ssl.*;
 
 class ServiceThread implements Runnable {
 
@@ -28,14 +29,16 @@ class ServiceThread implements Runnable {
     // for future implementation
     private Object handler = null;
     private LinkedHashMap<String, Object> handlers = null;
+    private Boolean is_embedded = true;
 
     @SuppressWarnings("unchecked")
-    public ServiceThread(Socket socket, int so_timeout, String webroot, LinkedHashMap handlers, boolean debug) {
+    public ServiceThread(Socket socket, int so_timeout, String webroot, LinkedHashMap handlers, Boolean is_embedded, boolean debug) {
         this.socket = socket;
         this.debug = debug;
         this.handlers = handlers;
         this.webroot = webroot;
         this.so_timeout = so_timeout;
+        this.is_embedded = is_embedded;;
     }
 
 
@@ -51,46 +54,47 @@ class ServiceThread implements Runnable {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()), 2048);
             PrintWriter out = new PrintWriter(new OutputStreamWriter(
                                                   socket.getOutputStream(), StandardCharsets.UTF_8), true);
-            //BufferedOutputStream data_out = new BufferedOutputStream(socket.getOutputStream());
             OutputStream data_out = socket.getOutputStream();
 
 
-            String requestLine = in.readLine();
             String final_path = null;
             String got_path = null;
             Boolean is_media = false;
             Boolean is_feed = false;
+
             // for future implementation
             Boolean custom_not_found = false;
 
-            // setting the remote_address
+            // getting the remote_address
             String remote_address=(((InetSocketAddress) this.socket.getRemoteSocketAddress()).getAddress()).toString().replace("/","");
 
 
-            String replaced = requestLine.replace("gemini:", "http:");
-            // DEBUG ONLY: for future implementation
             Request request = new Request();
+
+
+            String requestLine = in.readLine();
+            String replaced = requestLine.replace("gemini:", "http:");
             request.processRequest(remote_address, replaced);
 
             if(this.debug == true) {
+                new LogTool().debug("REMOTE: " + request.getRemoteAddress());
                 new LogTool().debug("PATH: " + request.getPath());
                 new LogTool().debug("QUERY: " + request.getQuery());
-                new LogTool().debug("REMOTE: " + request.getRemoteAddress());
             }
 
-            // the routing decision
-            String handler_path = request.getPath();
-            Iterator it = this.handlers.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry pair = (Map.Entry) it.next();
-                String test_path = (String) pair.getKey();
-                if(handler_path.startsWith(test_path)) {
-                    this.handler = (Object) pair.getValue();
-                    break;
+            // the routing decision, only if run as embedded
+            if(this.is_embedded == true) {
+                String handler_path = request.getPath();
+                Iterator it = this.handlers.entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry pair = (Map.Entry) it.next();
+                    String test_path = (String) pair.getKey();
+                    if(handler_path.startsWith(test_path)) {
+                        this.handler = (Object) pair.getValue();
+                        break;
+                    }
                 }
             }
-
-
 
 
             if (requestLine == null || requestLine.length() == 0) {
@@ -120,7 +124,7 @@ class ServiceThread implements Runnable {
             } else {
                 // DEBUG ONLY
                 if(this.debug == true) {
-                    new LogTool().debug(requestLine);
+                    new LogTool().debug("REQUEST: " + requestLine);
                 }
 
                 got_path = MollybToolkit.extractPath(new URL(replaced));
@@ -147,26 +151,29 @@ class ServiceThread implements Runnable {
                 }
 
 
-
-
-                Response dynamic_response = new Response();
-
                 if(this.handler != null) {
 
-                    try {
-                        Response pass_response = new Response();
-                        Class[] parameterTypes = new Class[] {Request.class, Response.class};
-                        Object[] arguments = new Object[] { request, pass_response };
-                        Method m = this.handler.getClass().getMethod("handle", parameterTypes);
-                        dynamic_response = (Response) m.invoke(this.handler, arguments);
-                        out.print(dynamic_response.getStatusCode() + " " + dynamic_response.getMimetype() + "\r\n");
-                        for( String line : dynamic_response.getBody()) {
-                            out.print(line);
+                    if(this.is_embedded == true) {
+                        if(this.debug == true) {
+                            new LogTool().debug("SERVER: Serving dynamic content");
                         }
+                        Response dynamic_response = new Response();
 
-                    } catch(Exception e) {
-                        Thread t = Thread.currentThread();
-                        t.getUncaughtExceptionHandler().uncaughtException(t, e);
+                        try {
+                            Response pass_response = new Response();
+                            Class[] parameterTypes = new Class[] {Request.class, Response.class};
+                            Object[] arguments = new Object[] { request, pass_response };
+                            Method m = this.handler.getClass().getMethod("handle", parameterTypes);
+                            dynamic_response = (Response) m.invoke(this.handler, arguments);
+                            out.print(dynamic_response.getStatusCode() + " " + dynamic_response.getMimetype() + "\r\n");
+                            for( String line : dynamic_response.getBody()) {
+                                out.print(line);
+                            }
+
+                        } catch(Exception e) {
+                            Thread t = Thread.currentThread();
+                            t.getUncaughtExceptionHandler().uncaughtException(t, e);
+                        }
                     }
 
                 } else if(!MollybToolkit.fileExists(final_path)) {
@@ -193,6 +200,10 @@ class ServiceThread implements Runnable {
                         out.print(line);
                     }
                 } else {
+                    if(this.debug == true) {
+                        new LogTool().debug("SERVER: Serving static content");
+                    }
+
                     Response response = new Response();
                     out.print(Response.OK + "\r\n");
                     ArrayList<String> payload = response.getStaticPayload(final_path);
@@ -204,6 +215,7 @@ class ServiceThread implements Runnable {
 
                 data_out.flush();
                 out.flush();
+                new LogTool().write(remote_address + " " + response_status + " " + got_path + " " + payload_size);
 
                 try {
                     data_out.close();
@@ -221,15 +233,12 @@ class ServiceThread implements Runnable {
                     }
                 }
 
-                new LogTool().write(remote_address + " " + response_status + " " + got_path + " " + payload_size);
 
             }
 
             this.socket.close();
 
         } catch (Exception e) {
-            // We don't actually want to throw an error here, instead we will log an invalid request in the future
-
             // DEBUG ONLY
             if(this.debug == true) {
                 Thread t = Thread.currentThread();

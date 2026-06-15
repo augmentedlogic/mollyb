@@ -26,7 +26,11 @@ public class Request {
     private String path = null;
     private String query_string = null;
     private String remote_address = null;
+    private ClientIdentity client_identity;
 
+    /**
+     *
+     **/
     protected void processRequest(String remote_address, String request_path) throws Exception {
 
         this.remote_address = remote_address;
@@ -38,6 +42,11 @@ public class Request {
             throw e;
         }
     }
+
+    protected void setClientIdentity(ClientIdentity client_identity) {
+        this.client_identity = client_identity;
+    }
+
 
     public String getPath() {
         return this.path;

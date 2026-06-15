@@ -25,3 +25,5 @@ webroot/
 log/
 service.sh
 private/
+BUNDLE/
+debian/

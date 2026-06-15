@@ -30,12 +30,14 @@ public class LogTool {
 
     }
 
-    public static void setLogfile(String path) {
-        if(!path.endsWith(File.separator)) {
-            path = path + File.separator;
-        }
+    public static void setAccessLog(String path) {
         Properties props = System.getProperties();
         props.setProperty("mollyb.logfile", path);
+    }
+
+    public static void setDebugLog(String path) {
+        Properties props = System.getProperties();
+        props.setProperty("mollyb.debuglog", path);
     }
 
     /**
@@ -50,7 +52,7 @@ public class LogTool {
     /**
      *
      **/
-    private void writeTo(String msg)  {
+    private void writeTo(String target_logfile, String msg)  {
 
         Properties systemProperties = System.getProperties();
         String date_format = systemProperties.getProperty("mollyb.log.dateformat");
@@ -62,32 +64,24 @@ public class LogTool {
         SimpleDateFormat format = new SimpleDateFormat(date_format);
         String DateToStr = format.format(curDate);
         String logmsg = DateToStr + " " + msg + "\n";
-        String access_log = systemProperties.getProperty("mollyb.logfile");
 
-        if(access_log == null) {
 
-            // we won't log or do anything if logfile is not set
+        PrintWriter printWriter = null;
+        File file = new File(target_logfile);
 
-        } else {
-
-            PrintWriter printWriter = null;
-            File file = new File(access_log);
-
-            try {
-                if (!file.exists()) file.createNewFile();
-                printWriter = new PrintWriter(new FileOutputStream(access_log, true));
-                printWriter.write(logmsg);
-            } catch (IOException e) {
-                System.out.println("can't write Logfile");
-            } finally {
-                if (printWriter != null) {
-                    printWriter.flush();
-                    printWriter.close();
-                }
+        try {
+            if (!file.exists()) file.createNewFile();
+            printWriter = new PrintWriter(new FileOutputStream(target_logfile, true));
+            printWriter.write(logmsg);
+        } catch (IOException e) {
+            System.out.println("can't write Logfile");
+        } finally {
+            if (printWriter != null) {
+                printWriter.flush();
+                printWriter.close();
             }
-
-
         }
+
 
     }
 
@@ -96,7 +90,11 @@ public class LogTool {
      *
      **/
     public void write(String msg) {
-        this.writeTo(msg);
+        Properties systemProperties = System.getProperties();
+        String access_log = systemProperties.getProperty("mollyb.logfile");
+        if(access_log != null) {
+            this.writeTo(access_log, msg);
+        }
     }
 
 
@@ -104,7 +102,13 @@ public class LogTool {
      *
      **/
     public void debug(String msg) {
-        System.out.println(msg);
+        Properties systemProperties = System.getProperties();
+        String debug_log = systemProperties.getProperty("mollyb.debuglog");
+        if(debug_log != null) {
+            this.writeTo(debug_log, msg);
+        } else {
+            System.out.println(msg);
+        }
     }
 
 
@@ -112,7 +116,13 @@ public class LogTool {
      *
      **/
     public void error(Exception emsg)  {
-        this.writeTo(emsg.getMessage());
+        Properties systemProperties = System.getProperties();
+        String debug_log = systemProperties.getProperty("mollyb.debuglog");
+        if(debug_log != null) {
+            this.writeTo(debug_log, emsg.getMessage());
+        } else {
+            System.out.println(emsg.getMessage());
+        }
     }
 
 }

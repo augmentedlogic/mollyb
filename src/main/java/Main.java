@@ -17,7 +17,7 @@ public class Main {
 
     public static void main( String[] args ) {
 
-        ConfigParser cp = null;
+        Configuration cp = null;
 
         try {
             String configfile = null;
@@ -29,22 +29,23 @@ public class Main {
             }
 
             configfile = args[0];
-            cp = new ConfigParser(configfile);
+            cp = new Configuration(configfile);
 
             // all is good
             System.out.println("\n");
             System.out.println("Starting mollyb " + MollybService.VERSION + " at " + cp.getBind() + ":" + cp.getPort());
 
-
         } catch(Exception e) {
             System.out.println(e);
         }
 
-
         MollybService ms = new MollybService(cp.getBind(), cp.getPort());
         ms.setBacklog(4096);
-        ms.setDebug(false);
+        ms.setDebug(cp.getDebug());
+        ms.setEmbedded(false);
         ms.setWebroot(cp.getWebroot());
+        ms.setKeystore(cp.getKeystore());
+        ms.setKeystorePassword(cp.getKeystorePassword());
         try {
             ms.start();
         } catch(Exception e) {

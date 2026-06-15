@@ -17,7 +17,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.Properties;
 
-public class ConfigParser {
+/**
+ * reads the configuration file when using the standalone service
+ */
+public class Configuration {
 
     private Pattern _section  = Pattern.compile("\\s*\\[([^]]*)\\]\\s*");
     private Pattern _keyValue = Pattern.compile("\\s*([^=]*)=(.*)");
@@ -25,17 +28,33 @@ public class ConfigParser {
     private int port = 1965;
     private String bind = "localhost";
     private String webroot = null;
+    private String keystore = null;
+    private String keystore_password = null;
+    private String custom_not_found = null;
+    private Boolean debug = false;
 
-    public ConfigParser(String path) throws IOException {
+    /**
+    * reads the configuration file when using the standalone service
+    *
+    * @param path path to the configuration file
+    * @throws IOException if the file does not exist
+    *
+    */
+    public Configuration(String path) throws IOException {
         load(path);
-
 
         this.port = this.getInt("service", "port", 7777);
         this.bind = this.getString("service", "bind", "localhost");
         webroot = this.getString("service", "webroot", null);
         String logfile = this.getString("service", "logfile", null);
+        int debug = this.getInt("service", "debug", 0);
+        if(debug == 1) {
+            this.debug = true;
+        }
+        String debug_log = this.getString("service", "debug_log", null);
         String keyfile = this.getString("security", "keystore", null);
         String password = this.getString("security", "password", null);
+        this.custom_not_found = this.getString("service", "not_found", null);
 
         Properties props = System.getProperties();
 
@@ -50,6 +69,7 @@ public class ConfigParser {
             System.out.println("No keyfile given. Not starting.");
             System.exit(0);
         } else {
+            this.keystore = keyfile;
             props.setProperty("mollyb.keyfile", keyfile);
         }
 
@@ -58,13 +78,16 @@ public class ConfigParser {
             System.out.println("No keystore password given. Not starting.");
             System.exit(0);
         } else {
+            this.keystore_password = password;
             props.setProperty("mollyb.password", password);
         }
-
 
         // only if logfile is set
         if(logfile != null) {
             props.setProperty("mollyb.logfile", logfile);
+        }
+        if(debug_log != null) {
+            props.setProperty("mollyb.debuglog", debug_log);
         }
 
     }
@@ -77,9 +100,26 @@ public class ConfigParser {
         return this.bind;
     }
 
+    public Boolean getDebug() {
+        return this.debug;
+    }
+
     public String getWebroot() {
         return this.webroot;
     }
+
+    public String getKeystore() {
+        return this.keystore;
+    }
+
+    public String getKeystorePassword() {
+        return this.keystore_password;
+    }
+
+    public String getCustomNotFound() {
+        return this.custom_not_found;
+    }
+
 
     public void load(String path) throws IOException {
         try(BufferedReader br = new BufferedReader(new FileReader( path ))) {
