@@ -20,6 +20,9 @@ import java.lang.reflect.*;
 import java.lang.Object;
 import javax.net.ssl.*;
 
+/**
+ * service thread thrown by MollybServer
+ */
 class ServiceThread implements Runnable {
 
     private final Socket socket;
@@ -31,6 +34,9 @@ class ServiceThread implements Runnable {
     private LinkedHashMap<String, Object> handlers = null;
     private Boolean is_embedded = true;
 
+    /**
+     * service thread thrown by MollybServer
+     */
     @SuppressWarnings("unchecked")
     public ServiceThread(Socket socket, int so_timeout, String webroot, LinkedHashMap handlers, Boolean is_embedded, boolean debug) {
         this.socket = socket;
@@ -42,6 +48,10 @@ class ServiceThread implements Runnable {
     }
 
 
+    /**
+     * main thread to process socket input
+     *
+     */
     @Override
     public void run() {
 

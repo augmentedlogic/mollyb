@@ -16,24 +16,44 @@ import static java.nio.file.Paths.get;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-
+/**
+ * various helper methods
+ **/
 public class MollybToolkit {
 
-    public static String sanitizeFilePath(String filePath) {
-        return filePath.replaceAll("[\\.]{2,}", "");
+    /**
+     * clean a path from unwanted elements
+     *
+     * @param file_path the path to clean
+     * @return the cleaned path
+     **/
+    public static String sanitizeFilePath(String file_path) {
+        return file_path.replaceAll("[\\.]{2,}", "");
     }
 
-
-    public static Boolean isMediaFile(String got_path) {
-        if(got_path.toLowerCase().endsWith(".jpg")
-                || got_path.toLowerCase().endsWith(".jpeg")
-                || got_path.toLowerCase().endsWith(".png")
-                || got_path.toLowerCase().endsWith(".gif")) {
+    /**
+     * check if a static file is a media file
+     *
+     * @param path_to_file the file to check
+     * @return boolean if file is media file or not
+     */
+    public static Boolean isMediaFile(String path_to_file) {
+        if(path_to_file.toLowerCase().endsWith(".jpg")
+                || path_to_file.toLowerCase().endsWith(".jpeg")
+                || path_to_file.toLowerCase().endsWith(".png")
+                || path_to_file.toLowerCase().endsWith(".gif")) {
             return true;
         }
         return false;
     }
 
+    /**
+    * get the mimetype of the media file
+    *
+    * @param path the path to the file to check
+    * @throws IOException if file does not exist
+    * @return the mimetype
+    */
     public static String getMediaContentType(String path) throws IOException {
         String mime = null;
         try {
@@ -44,8 +64,14 @@ public class MollybToolkit {
         return mime;
     }
 
-    public static Boolean fileExists(String filePathString) {
-        File f = new File(filePathString);
+    /**
+     * check if a file exists
+     *
+     * @param path_to_file the file to check
+     * @return false if file does not exist
+     */
+    public static Boolean fileExists(String path_to_file) {
+        File f = new File(path_to_file);
         if(f.exists() && !f.isDirectory()) {
             return true;
         }
@@ -53,12 +79,18 @@ public class MollybToolkit {
     }
 
     // not in use yet
-    static String readFile(String path) throws IOException {
-        byte[] encoded = Files.readAllBytes(Paths.get(path));
-        return new String(encoded);
-    }
+    //static String readFile(String path) throws IOException {
+    //    byte[] encoded = Files.readAllBytes(Paths.get(path));
+    //    return new String(encoded);
+    //}
 
-
+    /**
+     * extract the path from the URL
+     *
+     * @param url URL object
+     * @throws Exception on invalid URL
+     * @return the extracted path
+     */
     protected static String extractPath(URL url) throws Exception {
         String path = null;
         try {

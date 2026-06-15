@@ -17,24 +17,45 @@ import java.io.PrintWriter;
 import java.io.File;
 import java.util.Properties;
 
-
+/**
+ * writes the access, debug and error log
+ **/
 public class LogTool {
 
 
+    /**
+     * default date format used
+     **/
     private static final String DEFAULT_DATE_FORMAT = "dd MMM yyyy HH:mm:ss,SSS";
-    private static final String DEFAULT_LOG_DIR = "." + File.separator;
+    /**
+     * access log file path
+     **/
     private String logfile = null;
 
-
+    /**
+     * writes the access, debug and error log
+     **/
     public LogTool() {
 
     }
 
+    /**
+     * set the access log file path
+     *
+     * @param path the path to the access log file
+     *
+     **/
     public static void setAccessLog(String path) {
         Properties props = System.getProperties();
         props.setProperty("mollyb.logfile", path);
     }
 
+    /**
+     * set the debug log file path
+     *
+     * @param path the path to the debug log file
+     *
+     **/
     public static void setDebugLog(String path) {
         Properties props = System.getProperties();
         props.setProperty("mollyb.debuglog", path);
@@ -43,6 +64,8 @@ public class LogTool {
     /**
      * get the point at which the log entry was written
      * currently not used
+     *
+     * @return returns the point where the error ocurred
      **/
     public static String getLogPoint() {
         return Thread.currentThread().getStackTrace()[2].getClassName() + File.separator + Thread.currentThread().getStackTrace()[2].getMethodName();
@@ -50,6 +73,10 @@ public class LogTool {
 
 
     /**
+     * writes a new line to the log
+     *
+     * @param target_logfile path to the log file to write to
+     * @param msg the message added to the log file
      *
      **/
     private void writeTo(String target_logfile, String msg)  {
@@ -87,7 +114,9 @@ public class LogTool {
 
 
     /**
+     * wrapper for writing to the access log
      *
+     * @param msg the message added to the log file
      **/
     public void write(String msg) {
         Properties systemProperties = System.getProperties();
@@ -99,7 +128,9 @@ public class LogTool {
 
 
     /**
+     * wrapper for writing to the debug log
      *
+     * @param msg the message added to the log file
      **/
     public void debug(String msg) {
         Properties systemProperties = System.getProperties();
@@ -113,7 +144,9 @@ public class LogTool {
 
 
     /**
+     * wrapper for writing to the error log
      *
+     * @param emsg the message added to the log file
      **/
     public void error(Exception emsg)  {
         Properties systemProperties = System.getProperties();

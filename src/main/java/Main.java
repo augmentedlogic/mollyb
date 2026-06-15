@@ -13,8 +13,16 @@ import java.io.FileInputStream;
 import java.security.KeyStore;
 import java.util.Properties;
 
+/**
+ * main class and entry point when running mollyb as a standalone server
+ **/
 public class Main {
 
+    /**
+     * main method and entry point when running mollyb as a standalone server
+     *
+     * @param args command line arguments
+     **/
     public static void main( String[] args ) {
 
         Configuration cp = null;

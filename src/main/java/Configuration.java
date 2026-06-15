@@ -37,8 +37,7 @@ public class Configuration {
     * reads the configuration file when using the standalone service
     *
     * @param path path to the configuration file
-    * @throws IOException if the file does not exist
-    *
+    * @throws IOException if config file does not exist
     */
     public Configuration(String path) throws IOException {
         load(path);
@@ -92,35 +91,77 @@ public class Configuration {
 
     }
 
+    /**
+     * get the port set in the config file
+     *
+     * @return port as an integer
+     **/
     public int getPort() {
         return this.port;
     }
 
+    /**
+     * returns the bind address set in the config file
+     *
+     * @return bind address to bind to as string
+     **/
     public String getBind() {
         return this.bind;
     }
 
+    /**
+     * returns if debug is set in the config file
+     *
+     * @return debug debug status as boolean
+     **/
     public Boolean getDebug() {
         return this.debug;
     }
 
+
+    /**
+     * returns the webroot directory set in the config file
+     *
+     * @return webroot the path to the webroot directory
+     *
+     **/
     public String getWebroot() {
         return this.webroot;
     }
 
+    /**
+     * returns the keystore file set in the config file
+     *
+     * @return keystore the path to the keystore file
+     **/
     public String getKeystore() {
         return this.keystore;
     }
 
+    /**
+     * returns the keystore password set in the config file
+     *
+     * @return keystore_password the password to access the keystore file
+     **/
     public String getKeystorePassword() {
         return this.keystore_password;
     }
 
+    /**
+     * returns the file of the custom not found page set in the config file
+     *
+     * @return custom_not_found path to the custom not found page
+     **/
     public String getCustomNotFound() {
         return this.custom_not_found;
     }
 
-
+    /**
+     * loads the configuration from ini file
+     *
+     * @param path the path to the config file as string
+     * @throws IOException if file does not exist
+     **/
     public void load(String path) throws IOException {
         try(BufferedReader br = new BufferedReader(new FileReader( path ))) {
             String line;
@@ -145,18 +186,35 @@ public class Configuration {
         }
     }
 
-    public String getString(String section, String key, String defaultvalue) {
+    /**
+     * returns a string parameter from the loaded configuration
+     *
+     * @param section the ini file section
+     * @param key the key parameter from the ini file
+     * @param default_value default value to be returned if value is null
+     * @return the value found or the default
+     *
+     **/
+    public String getString(String section, String key, String default_value) {
         Map< String, String > kv = _entries.get(section);
         if(kv == null) {
-            return defaultvalue;
+            return default_value;
         }
         return kv.get(key);
     }
 
-    public int getInt(String section, String key, int defaultvalue) {
+    /**
+     * returns an integer parameter from the loaded configuration
+     * @param section the ini file section
+     * @param key the key parameter from the ini file
+     * @param default_value default value to be returned if value is null
+     * @return the value found or the default
+     *
+     **/
+    public int getInt(String section, String key, int default_value) {
         Map<String, String> kv = _entries.get(section);
         if(kv == null) {
-            return defaultvalue;
+            return default_value;
         }
         return Integer.parseInt(kv.get(key));
     }
