@@ -26,19 +26,20 @@ class ServiceThread implements Runnable {
     private int so_timeout = 20000;
     private boolean debug = false;
     private String webroot = null;
-    // for future implementation
+    private String custom_not_found = null;
     private Object handler = null;
     private LinkedHashMap<String, Object> handlers = null;
     private Boolean is_embedded = true;
 
     @SuppressWarnings("unchecked")
-    public ServiceThread(Socket socket, int so_timeout, String webroot, LinkedHashMap handlers, Boolean is_embedded, boolean debug) {
+    public ServiceThread(Socket socket, int so_timeout, String webroot, LinkedHashMap handlers, String custom_not_found, Boolean is_embedded, boolean debug) {
         this.socket = socket;
         this.debug = debug;
         this.handlers = handlers;
         this.webroot = webroot;
         this.so_timeout = so_timeout;
-        this.is_embedded = is_embedded;;
+        this.is_embedded = is_embedded;
+        this.custom_not_found = custom_not_found;
     }
 
 
@@ -61,9 +62,6 @@ class ServiceThread implements Runnable {
             String got_path = null;
             Boolean is_media = false;
             Boolean is_feed = false;
-
-            // for future implementation
-            Boolean custom_not_found = false;
 
             // getting the remote_address
             String remote_address=(((InetSocketAddress) this.socket.getRemoteSocketAddress()).getAddress()).toString().replace("/","");
@@ -177,12 +175,20 @@ class ServiceThread implements Runnable {
                     }
 
                 } else if(!MollybToolkit.fileExists(final_path)) {
-                    if(custom_not_found == true) {
-                        out.print(Response.OK + "\r\n");
+                    if(this.custom_not_found != null) {
+                        if(this.debug == true) {
+                           new LogTool().debug("RESPONSE: serving custom not found: " + this.custom_not_found);
+                        }
+                        Response response = new Response();
+                        out.print("20 text/gemini\r\n");
+                        ArrayList<String> payload = response.getStaticPayload(this.custom_not_found);
+                        payload_size = response.getPayloadSize();
+                        for( String line : payload) {
+                            out.print(line);
+                        }
                     } else {
                         out.print(Response.NOT_FOUND + "\r\n");
                     }
-                    out.print("# Page Not Found\r\n");
                     response_status = 51;
 
                 } else if(is_media == true) {

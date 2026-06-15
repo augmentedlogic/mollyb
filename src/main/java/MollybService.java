@@ -40,6 +40,7 @@ public class MollybService {
     private String webroot = null;
     private String access_log = null;
     private String debug_log = null;
+    private String custom_not_found = null;
     private LinkedHashMap<String, Object> handlers = new LinkedHashMap<String, Object>();
     private String keystore = null;
     private String keystore_password = null;
@@ -63,6 +64,10 @@ public class MollybService {
 
     public void setDebugLog(String debug_log) {
         this.debug_log = debug_log;
+    }
+
+    public void setCustomNotFound(String custom_not_found) {
+        this.custom_not_found = custom_not_found;
     }
 
     public void setWebroot(String webroot) {
@@ -127,7 +132,7 @@ public class MollybService {
 
             while (true) {
                 int thread_count = java.lang.Thread.activeCount();
-                Runnable runnable =  new ServiceThread(sslListener.accept(), this.so_timeout, this.webroot, this.handlers, this.is_embedded, this.debug);
+                Runnable runnable =  new ServiceThread(sslListener.accept(), this.so_timeout, this.webroot, this.handlers, this.custom_not_found, this.is_embedded, this.debug);
                 Thread thread = new Thread(runnable);
                 thread.start();
             }

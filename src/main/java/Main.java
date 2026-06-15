@@ -46,6 +46,7 @@ public class Main {
         ms.setWebroot(cp.getWebroot());
         ms.setKeystore(cp.getKeystore());
         ms.setKeystorePassword(cp.getKeystorePassword());
+        ms.setCustomNotFound(cp.getCustomNotFound());
         try {
             ms.start();
         } catch(Exception e) {
