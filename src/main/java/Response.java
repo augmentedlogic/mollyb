@@ -186,8 +186,8 @@ public class Response {
                 lines.add(sc.nextLine() + "\r\n");
             }
         } catch(Exception e) {
-            // DEBUG ONLY
             new LogTool().debug("FILE NOT FOUND");
+            new LogTool().debug(e.getMessage());
         }
 
         return lines;

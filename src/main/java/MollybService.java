@@ -45,6 +45,7 @@ public class MollybService {
     private String access_log = null;
     private String debug_log = null;
     private String error_log = null;
+    private String custom_not_found = null;
     private LinkedHashMap<String, Object> handlers = new LinkedHashMap<String, Object>();
     private String keystore = null;
     private String keystore_password = null;
@@ -98,7 +99,7 @@ public class MollybService {
     }
 
     /**
-     * set the path to the debug log file
+     * set the path to the error log file
      *
      * @param error_log the path to the debug log
      */
@@ -106,6 +107,10 @@ public class MollybService {
         this.error_log = error_log;
     }
 
+
+    public void setCustomNotFound(String custom_not_found) {
+        this.custom_not_found = custom_not_found;
+    }
 
     /**
      * set the path to the directory files are served from
@@ -207,7 +212,7 @@ public class MollybService {
 
             while (true) {
                 int thread_count = java.lang.Thread.activeCount();
-                Runnable runnable =  new ServiceThread(sslListener.accept(), this.so_timeout, this.webroot, this.handlers, this.is_embedded, this.debug);
+                Runnable runnable =  new ServiceThread(sslListener.accept(), this.so_timeout, this.webroot, this.handlers, this.custom_not_found, this.is_embedded, this.debug);
                 Thread thread = new Thread(runnable);
                 thread.start();
             }
