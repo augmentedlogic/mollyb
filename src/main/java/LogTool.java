@@ -62,6 +62,17 @@ public class LogTool {
     }
 
     /**
+     * set the error log file path
+     *
+     * @param path the path to the error log file
+     *
+     **/
+    public static void setErrorLog(String path) {
+        Properties props = System.getProperties();
+        props.setProperty("mollyb.errorlog", path);
+    }
+
+    /**
      * get the point at which the log entry was written
      * currently not used
      *
@@ -150,9 +161,9 @@ public class LogTool {
      **/
     public void error(Exception emsg)  {
         Properties systemProperties = System.getProperties();
-        String debug_log = systemProperties.getProperty("mollyb.debuglog");
-        if(debug_log != null) {
-            this.writeTo(debug_log, emsg.getMessage());
+        String error_log = systemProperties.getProperty("mollyb.errorlog");
+        if(error_log != null) {
+            this.writeTo(error_log, emsg.getMessage());
         } else {
             System.out.println(emsg.getMessage());
         }

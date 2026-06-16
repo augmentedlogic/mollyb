@@ -94,15 +94,20 @@ class ServiceThread implements Runnable {
 
             // the routing decision, only if run as embedded
             if(this.is_embedded == true) {
-                String handler_path = request.getPath();
+                String path_to_match = request.getPath();
                 Iterator it = this.handlers.entrySet().iterator();
                 while (it.hasNext()) {
                     Map.Entry pair = (Map.Entry) it.next();
-                    String test_path = (String) pair.getKey();
-                    if(handler_path.startsWith(test_path)) {
+                    String handler_path = (String) pair.getKey();
+                    if(MollybToolkit.matchHandler(handler_path, path_to_match) == true) {
                         this.handler = (Object) pair.getValue();
                         break;
                     }
+
+                    //if(path_to_match.startsWith(test_path)) {
+                    //    this.handler = (Object) pair.getValue();
+                    //    break;
+                    //}
                 }
             }
 

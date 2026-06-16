@@ -44,6 +44,7 @@ public class MollybService {
     private String webroot = null;
     private String access_log = null;
     private String debug_log = null;
+    private String error_log = null;
     private LinkedHashMap<String, Object> handlers = new LinkedHashMap<String, Object>();
     private String keystore = null;
     private String keystore_password = null;
@@ -95,6 +96,16 @@ public class MollybService {
     public void setDebugLog(String debug_log) {
         this.debug_log = debug_log;
     }
+
+    /**
+     * set the path to the debug log file
+     *
+     * @param error_log the path to the debug log
+     */
+    public void setErrorLog(String error_log) {
+        this.error_log = error_log;
+    }
+
 
     /**
      * set the path to the directory files are served from
@@ -188,6 +199,9 @@ public class MollybService {
             }
             if(this.debug_log != null) {
                 LogTool.setDebugLog(this.debug_log);
+            }
+            if(this.error_log != null) {
+                LogTool.setErrorLog(this.error_log);
             }
 
 

@@ -51,6 +51,7 @@ public class Configuration {
             this.debug = true;
         }
         String debug_log = this.getString("service", "debug_log", null);
+        String error_log = this.getString("service", "error_log", null);
         String keyfile = this.getString("security", "keystore", null);
         String password = this.getString("security", "password", null);
         this.custom_not_found = this.getString("service", "not_found", null);
@@ -87,6 +88,9 @@ public class Configuration {
         }
         if(debug_log != null) {
             props.setProperty("mollyb.debuglog", debug_log);
+        }
+        if(error_log != null) {
+            props.setProperty("mollyb.errorlog", error_log);
         }
 
     }

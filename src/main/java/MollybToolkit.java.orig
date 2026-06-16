@@ -78,42 +78,43 @@ public class MollybToolkit {
         return false;
     }
 
-    /**
-     * match a handler path to the url path
-     *
-     * @param handler_path the path set in addHandler which may contain a wildcard
-     * @param path_to_match  the path extracted from the url
-     * @return true when match was found
-     **/
-    protected static boolean matchHandler(String handler_path, String path_to_match) {
+/**
+ * match a handler path to the url path
+ *
+ * @param handler_path the path set in addHandler which may contain a wildcard
+ * @param path_to_match  the path extracted from the url
+ * @return true when match was found
+ **/
+protected static boolean matchHandler(String handler_path, String path_to_match)
+{
 
-        if (handler_path.length() == 0 && path_to_match.length() == 0) {
-            return true;
+    if (handler_path.length() == 0 && path_to_match.length() == 0) {
+        return true;
+    }
+
+    if (handler_path.length() > 1 && handler_path.charAt(0) == '*') {
+      int i=0;
+        while (i+1<handler_path.length() && handler_path.charAt(i+1) == '*') {
+              i++;
+              handler_path=handler_path.substring(i);
         }
+    }
 
-        if (handler_path.length() > 1 && handler_path.charAt(0) == '*') {
-            int i=0;
-            while (i+1<handler_path.length() && handler_path.charAt(i+1) == '*') {
-                i++;
-                handler_path=handler_path.substring(i);
-            }
-        }
-
-        if (handler_path.length() > 1 && handler_path.charAt(0) == '*' && path_to_match.length() == 0) {
-            return false;
-        }
-
-        if ((handler_path.length() > 1 && handler_path.charAt(0) == '?') || (handler_path.length() != 0 && path_to_match.length() != 0 &&
-                handler_path.charAt(0) == path_to_match.charAt(0))) {
-            return matchHandler(handler_path.substring(1), path_to_match.substring(1));
-        }
-
-        if (handler_path.length() > 0 && handler_path.charAt(0) == '*') {
-            return matchHandler(handler_path.substring(1), path_to_match) || matchHandler(handler_path, path_to_match.substring(1));
-        }
-
+    if (handler_path.length() > 1 && handler_path.charAt(0) == '*' && path_to_match.length() == 0) {
         return false;
     }
+
+    if ((handler_path.length() > 1 && handler_path.charAt(0) == '?') || (handler_path.length() != 0 && path_to_match.length() != 0 &&
+         handler_path.charAt(0) == path_to_match.charAt(0))) {
+         return matchHandler(handler_path.substring(1), path_to_match.substring(1));
+    }
+
+    if (handler_path.length() > 0 && handler_path.charAt(0) == '*') {
+        return matchHandler(handler_path.substring(1), path_to_match) || matchHandler(handler_path, path_to_match.substring(1));
+    }
+
+    return false;
+}
 
     // not in use yet
     //static String readFile(String path) throws IOException {
