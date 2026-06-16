@@ -67,6 +67,7 @@ public class Response {
 
     private long filesize = 0;
     private String mimetype = "text/gemini";
+    private String header = "20 text/gemini";
     private int status_code = 20;
     private ArrayList<String> payload_lines = new ArrayList<String>();
 
@@ -111,6 +112,15 @@ public class Response {
     }
 
     /**
+     * set the header of the response
+     *
+     * @param header the response header
+     */
+    public void setHeader(String header) {
+        this.header = header;
+    }
+
+    /**
      * add to the body that will be resturned by the response
      *
      * @param line the text line to be added to the body
@@ -136,6 +146,16 @@ public class Response {
     protected String getMimetype() {
         return this.mimetype;
     }
+
+    /**
+     * get the header of the response
+     *
+     * @return the header of the response
+     */
+    protected String getHeader() {
+        return this.header;
+    }
+
 
     /**
      * get the body of the response

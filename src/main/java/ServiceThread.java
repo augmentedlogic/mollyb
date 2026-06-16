@@ -175,7 +175,7 @@ class ServiceThread implements Runnable {
                             Object[] arguments = new Object[] { request, pass_response };
                             Method m = this.handler.getClass().getMethod("handle", parameterTypes);
                             dynamic_response = (Response) m.invoke(this.handler, arguments);
-                            out.print(dynamic_response.getStatusCode() + " " + dynamic_response.getMimetype() + "\r\n");
+                            out.print(dynamic_response.getHeader() + "\r\n");
                             for( String line : dynamic_response.getBody()) {
                                 out.print(line);
                             }

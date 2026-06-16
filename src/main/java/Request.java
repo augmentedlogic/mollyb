@@ -74,6 +74,14 @@ public class Request {
      * @return the query string
      **/
     public String getQuery() {
+
+        try {
+           if(this.query_string != null) {
+             query_string = java.net.URLDecoder.decode(query_string, StandardCharsets.UTF_8.name());
+           }
+        } catch(Exception e) {
+           System.out.println(e);
+        }
         return this.query_string;
     }
 
