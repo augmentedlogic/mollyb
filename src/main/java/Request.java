@@ -46,7 +46,7 @@ public class Request {
             this.path = url.getPath();
             this.query_string = url.getQuery();
         } catch(Exception e) {
-            throw e;
+            new LogTool().error(LogTool.getLogPoint(), e);
         }
     }
 
@@ -76,11 +76,11 @@ public class Request {
     public String getQuery() {
 
         try {
-           if(this.query_string != null) {
-             query_string = java.net.URLDecoder.decode(query_string, StandardCharsets.UTF_8.name());
-           }
+            if(this.query_string != null) {
+                query_string = java.net.URLDecoder.decode(query_string, StandardCharsets.UTF_8.name());
+            }
         } catch(Exception e) {
-           System.out.println(e);
+            new LogTool().error(LogTool.getLogPoint(), e);
         }
         return this.query_string;
     }

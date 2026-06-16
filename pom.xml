@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.augmentedlogic</groupId>
   <artifactId>mollyb</artifactId>
-  <version>0.7</version>
+  <version>0.7.1</version>
   <name>mollyb</name>
   <description>a basic gemini protocol server</description>
   <url>https://developer.augmentedlogic.com</url>
@@ -124,8 +124,6 @@
         <artifactId>maven-assembly-plugin</artifactId>
         <version>3.1.1</version>
         <configuration>
-          <finalName>mollyb-server</finalName>
-          <appendAssemblyId>false</appendAssemblyId>
           <descriptorRefs>
             <descriptorRef>jar-with-dependencies</descriptorRef>
           </descriptorRefs>
@@ -148,6 +146,24 @@
             <goals>
               <goal>single</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.coderplus.maven.plugins</groupId>
+        <artifactId>copy-rename-maven-plugin</artifactId>
+        <version>1.0.1</version>
+        <executions>
+          <execution>
+            <id>rename-file</id>
+            <phase>package</phase>
+            <goals>
+              <goal>rename</goal>
+            </goals>
+            <configuration>
+              <sourceFile>${project.build.directory}/${name}-${version}-jar-with-dependencies.jar</sourceFile>
+              <destinationFile>${project.build.directory}/mollyb-server.jar</destinationFile>
+            </configuration>
           </execution>
         </executions>
       </plugin>

@@ -112,7 +112,7 @@ public class LogTool {
             printWriter = new PrintWriter(new FileOutputStream(target_logfile, true));
             printWriter.write(logmsg);
         } catch (IOException e) {
-            System.out.println("can't write Logfile");
+            new LogTool().error(LogTool.getLogPoint(), e);
         } finally {
             if (printWriter != null) {
                 printWriter.flush();
@@ -157,15 +157,16 @@ public class LogTool {
     /**
      * wrapper for writing to the error log
      *
+     * @param logpoint the method where the error occurred
      * @param emsg the message added to the log file
      **/
-    public void error(Exception emsg)  {
+    public void error(String logpoint, Exception emsg)  {
         Properties systemProperties = System.getProperties();
         String error_log = systemProperties.getProperty("mollyb.errorlog");
         if(error_log != null) {
-            this.writeTo(error_log, emsg.getMessage());
+            this.writeTo(error_log, logpoint + " : " + emsg.getMessage());
         } else {
-            System.out.println(emsg.getMessage());
+            System.out.println(emsg);
         }
     }
 

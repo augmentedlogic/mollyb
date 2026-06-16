@@ -38,12 +38,13 @@ class ClientIdentity {
                 this.name = this.peer_certificate.getSubjectX500Principal().getName();
 
             } catch (CertificateExpiredException e) {
-                System.out.println("client cert not valid");
+                new LogTool().error(LogTool.getLogPoint(), e);
             }
 
 
         } catch (SSLPeerUnverifiedException e) {
             this.peer_certificate = null;
+            new LogTool().error(LogTool.getLogPoint(), e);
         }
 
     }

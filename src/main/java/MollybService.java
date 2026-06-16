@@ -49,6 +49,7 @@ public class MollybService {
     private LinkedHashMap<String, Object> handlers = new LinkedHashMap<String, Object>();
     private String keystore = null;
     private String keystore_password = null;
+    private String key_password = null;
 
     /**
      * service class that initates the SSL connection and throws the service thread
@@ -107,7 +108,11 @@ public class MollybService {
         this.error_log = error_log;
     }
 
-
+    /**
+     * set the path to a custom not found file
+     *
+     * @param custom_not_found the path to the static file
+     */
     public void setCustomNotFound(String custom_not_found) {
         this.custom_not_found = custom_not_found;
     }
@@ -177,6 +182,9 @@ public class MollybService {
 
             String keystore = this.keystore;
             String password = this.keystore_password;
+            if(this.key_password == null) {
+                this.key_password = this.keystore_password;
+            }
 
             KeyStore keystore_object = KeyStore.getInstance(KeyStore.getDefaultType());
             keystore_object.load(new FileInputStream(keystore), password.toCharArray());
@@ -219,7 +227,7 @@ public class MollybService {
 
 
         } catch (IOException e) {
-            throw e;
+            new LogTool().error(LogTool.getLogPoint(), e);
         }
 
     }

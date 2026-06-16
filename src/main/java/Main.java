@@ -44,7 +44,7 @@ public class Main {
             System.out.println("Starting mollyb " + MollybService.VERSION + " at " + cp.getBind() + ":" + cp.getPort());
 
         } catch(Exception e) {
-            System.out.println(e);
+            new LogTool().error(LogTool.getLogPoint(), e);
         }
 
         MollybService ms = new MollybService(cp.getBind(), cp.getPort());
@@ -58,7 +58,7 @@ public class Main {
         try {
             ms.start();
         } catch(Exception e) {
-            System.out.println(e);
+            new LogTool().error(LogTool.getLogPoint(), e);
         }
     }
 

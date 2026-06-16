@@ -59,7 +59,7 @@ public class MollybToolkit {
         try {
             mime = Files.probeContentType(Paths.get(path));
         } catch(Exception e) {
-            // Only for debug
+            new LogTool().error(LogTool.getLogPoint(), e);
         }
         return mime;
     }
@@ -133,7 +133,7 @@ public class MollybToolkit {
         try {
             path = url.getPath();
         } catch(Exception e) {
-            throw e;
+            new LogTool().error(LogTool.getLogPoint(), e);
         }
         return path;
     }

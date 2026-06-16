@@ -192,7 +192,7 @@ class ServiceThread implements Runnable {
                 } else if(!MollybToolkit.fileExists(final_path)) {
                     if(this.custom_not_found != null) {
                         if(this.debug == true) {
-                           new LogTool().debug("RESPONSE: serving custom not found: " + this.custom_not_found);
+                            new LogTool().debug("RESPONSE: serving custom not found: " + this.custom_not_found);
                         }
                         Response response = new Response();
                         out.print("20 text/gemini\r\n");
@@ -242,7 +242,7 @@ class ServiceThread implements Runnable {
                     data_out.close();
                 } catch(Exception doe) {
                     if(this.debug == true) {
-                        new LogTool().debug(doe.getMessage());
+                        new LogTool().error(LogTool.getLogPoint(), doe);
                     }
                 }
 
@@ -250,7 +250,7 @@ class ServiceThread implements Runnable {
                     out.close();
                 } catch(Exception oe) {
                     if(this.debug == true) {
-                        new LogTool().debug(oe.getMessage());
+                        new LogTool().error(LogTool.getLogPoint(), oe);
                     }
                 }
 
@@ -264,6 +264,7 @@ class ServiceThread implements Runnable {
             if(this.debug == true) {
                 Thread t = Thread.currentThread();
                 t.getUncaughtExceptionHandler().uncaughtException(t, e);
+                new LogTool().error(LogTool.getLogPoint(), e);
             }
 
             try {
@@ -271,7 +272,7 @@ class ServiceThread implements Runnable {
             } catch(Exception ex) {
 
                 if(this.debug == true) {
-                    new LogTool().debug(ex.getMessage());
+                    new LogTool().error(LogTool.getLogPoint(), ex);
                 }
 
             }
