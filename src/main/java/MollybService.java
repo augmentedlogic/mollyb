@@ -33,7 +33,7 @@ public class MollybService {
     /**
      * server build version
      **/
-    public static final String VERSION = "0.7.1";
+    public static final String VERSION = "0.7.2";
 
     private String bind_to = "localhost";
     private int port = 8080;

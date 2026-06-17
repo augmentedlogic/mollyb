@@ -115,12 +115,6 @@ public class MollybToolkit {
         return false;
     }
 
-    // not in use yet
-    //static String readFile(String path) throws IOException {
-    //    byte[] encoded = Files.readAllBytes(Paths.get(path));
-    //    return new String(encoded);
-    //}
-
     /**
      * extract the path from the URL
      *

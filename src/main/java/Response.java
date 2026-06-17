@@ -123,10 +123,13 @@ public class Response {
     /**
      * add to the body that will be resturned by the response
      *
-     * @param line the text line to be added to the body
+     * @param body the text to be added to the body
      */
-    public void addBody(String line) {
-        this.payload_lines.add(line + "\r\n");
+    public void addBody(String body) {
+        String[] lines = body.split(System.getProperty("line.separator"));
+        for(String line: lines) {
+            this.payload_lines.add(line + "\r\n");
+        }
     }
 
     /**
