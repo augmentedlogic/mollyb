@@ -46,6 +46,7 @@ mvn package
 The server does not directly work with pem files. To help you convert your fullchain.pem and privkey.pem into a .jks (java keystore) file,
 see the certifcates.sh in the scripts/ folder.
 
+## As a standalone server
 
 ### Configuration
 
