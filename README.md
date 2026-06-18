@@ -18,7 +18,7 @@ mollyb is a standalone gemini protocol server and library written in java, witho
 
 * writes a basic access log (if so configured)
 
-* returns a decent "File not found" page if file or path does not exist
+* returns a custom "File not found" page (if set) if file or path does not exist
 
 * dynamic pages/input handling: embedded use only (no cgi support)
 
@@ -95,7 +95,7 @@ public class Main {
         ms.setKeystorePassword("mysecret");
         ms.setKeyPassword("mysecret");
         // set a custom not found page
-        ms.setCustomNotFound("path/to/your/not_found.gmi");
+        ms.setCustomNotFound("/path/to/your/not_found.gmi");
 
         // logging
         ms.setAccessLog("/path/to/your/access.log");
