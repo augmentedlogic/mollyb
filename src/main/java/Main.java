@@ -48,12 +48,12 @@ public class Main {
         }
 
         MollybService ms = new MollybService(cp.getBind(), cp.getPort());
-        ms.setBacklog(4096);
         ms.setDebug(cp.getDebug());
         ms.setEmbedded(false);
         ms.setWebroot(cp.getWebroot());
         ms.setKeystore(cp.getKeystore());
         ms.setKeystorePassword(cp.getKeystorePassword());
+        ms.setKeyPassword(cp.getKeyPassword());
         ms.setCustomNotFound(cp.getCustomNotFound());
         try {
             ms.start();

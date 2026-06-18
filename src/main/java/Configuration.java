@@ -30,6 +30,7 @@ public class Configuration {
     private String webroot = null;
     private String keystore = null;
     private String keystore_password = null;
+    private String key_password = null;
     private String custom_not_found = null;
     private Boolean debug = false;
 
@@ -45,15 +46,16 @@ public class Configuration {
         this.port = this.getInt("service", "port", 7777);
         this.bind = this.getString("service", "bind", "localhost");
         webroot = this.getString("service", "webroot", null);
-        String logfile = this.getString("service", "logfile", null);
+        String access_log = this.getString("service", "access_log", null);
         int debug = this.getInt("service", "debug", 0);
         if(debug == 1) {
             this.debug = true;
         }
         String debug_log = this.getString("service", "debug_log", null);
         String error_log = this.getString("service", "error_log", null);
-        String keyfile = this.getString("security", "keystore", null);
-        String password = this.getString("security", "password", null);
+        String keystore = this.getString("security", "keystore", null);
+        String keystore_password = this.getString("security", "password", null);
+        String key_password = this.getString("security", "key_password", null);
         this.custom_not_found = this.getString("service", "not_found", null);
 
         Properties props = System.getProperties();
@@ -64,27 +66,27 @@ public class Configuration {
             System.exit(0);
         }
 
-        // keyfile/keystore is required
-        if(keyfile == null) {
+        // keystore is required
+        if(keystore == null) {
             System.out.println("No keyfile given. Not starting.");
             System.exit(0);
         } else {
-            this.keystore = keyfile;
-            props.setProperty("mollyb.keyfile", keyfile);
+            this.keystore = keystore;
+            props.setProperty("mollyb.keystore", keystore);
         }
 
         // keystore password is required
-        if(password == null) {
+        if(keystore_password == null) {
             System.out.println("No keystore password given. Not starting.");
             System.exit(0);
         } else {
-            this.keystore_password = password;
-            props.setProperty("mollyb.password", password);
+            this.keystore_password = keystore_password;
+            props.setProperty("mollyb.password", keystore_password);
         }
 
-        // only if logfile is set
-        if(logfile != null) {
-            props.setProperty("mollyb.logfile", logfile);
+        // only if logfiles are set
+        if(access_log != null) {
+            props.setProperty("mollyb.access_log", access_log);
         }
         if(debug_log != null) {
             props.setProperty("mollyb.debuglog", debug_log);
@@ -150,6 +152,16 @@ public class Configuration {
     public String getKeystorePassword() {
         return this.keystore_password;
     }
+
+    /**
+     * returns the keystore password set in the config file
+     *
+     * @return keystore_password the password to access the keystore file
+     **/
+    public String getKeyPassword() {
+        return this.key_password;
+    }
+
 
     /**
      * returns the file of the custom not found page set in the config file

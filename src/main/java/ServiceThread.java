@@ -236,7 +236,13 @@ class ServiceThread implements Runnable {
 
                 data_out.flush();
                 out.flush();
-                new LogTool().write(remote_address + " " + response_status + " " + got_path + " " + payload_size);
+
+                // for logging purposes, we add a "/" to the root path
+                if(got_path == "") {
+                   got_path = "/";
+                }
+
+                new LogTool().write(remote_address + " " + got_path + " " + response_status + " " + payload_size);
 
                 try {
                     data_out.close();

@@ -33,13 +33,13 @@ public class MollybService {
     /**
      * server build version
      **/
-    public static final String VERSION = "0.7.2";
+    public static final String VERSION = "0.7.4";
 
     private String bind_to = "localhost";
     private int port = 8080;
     private boolean debug = false;
     private boolean is_embedded = true;
-    private int backlog = 100;
+    private int backlog = 200;
     private int so_timeout = 5000;
     private String webroot = null;
     private String access_log = null;
@@ -75,7 +75,7 @@ public class MollybService {
     /**
      * sets the socket backlog
      *
-     * @param backlog the socket backlog in bytes
+     * @param backlog the socket backlog, default is 200
      */
     public void setBacklog(int backlog) {
         this.backlog = backlog;
@@ -145,6 +145,16 @@ public class MollybService {
     }
 
     /**
+     * set the password for the key
+     *
+     * @param key_password the keystore password
+     */
+    public void setKeyPassword(String key_password) {
+        this.key_password = key_password;
+    }
+
+
+    /**
      * enable debugging
      *
      * @param debug set true to enable debugging
@@ -187,10 +197,10 @@ public class MollybService {
             }
 
             KeyStore keystore_object = KeyStore.getInstance(KeyStore.getDefaultType());
-            keystore_object.load(new FileInputStream(keystore), password.toCharArray());
+            keystore_object.load(new FileInputStream(keystore), this.keystore_password.toCharArray());
 
             KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-            keyManagerFactory.init(keystore_object, password.toCharArray());
+            keyManagerFactory.init(keystore_object, this.key_password.toCharArray());
 
             SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
             TrustManagerFactory factory = TrustManagerFactory.getInstance(

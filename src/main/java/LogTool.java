@@ -26,7 +26,7 @@ public class LogTool {
     /**
      * default date format used
      **/
-    private static final String DEFAULT_DATE_FORMAT = "dd MMM yyyy HH:mm:ss,SSS";
+    private static final String DEFAULT_DATE_FORMAT = "[dd/MMM/yyyy:HH:mm:ss Z]";
     /**
      * access log file path
      **/
@@ -47,7 +47,7 @@ public class LogTool {
      **/
     public static void setAccessLog(String path) {
         Properties props = System.getProperties();
-        props.setProperty("mollyb.logfile", path);
+        props.setProperty("mollyb.access_log", path);
     }
 
     /**
@@ -129,9 +129,9 @@ public class LogTool {
      *
      * @param msg the message added to the log file
      **/
-    public void write(String msg) {
+    protected void write(String msg) {
         Properties systemProperties = System.getProperties();
-        String access_log = systemProperties.getProperty("mollyb.logfile");
+        String access_log = systemProperties.getProperty("mollyb.access_log");
         if(access_log != null) {
             this.writeTo(access_log, msg);
         }
@@ -164,7 +164,7 @@ public class LogTool {
         Properties systemProperties = System.getProperties();
         String error_log = systemProperties.getProperty("mollyb.errorlog");
         if(error_log != null) {
-            this.writeTo(error_log, logpoint + " : " + emsg.getMessage());
+            this.writeTo(error_log, logpoint + " : " + emsg.toString());
         } else {
             System.out.println(emsg);
         }

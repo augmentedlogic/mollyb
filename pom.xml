@@ -3,10 +3,10 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.augmentedlogic</groupId>
   <artifactId>mollyb</artifactId>
-  <version>0.7.2</version>
+  <version>0.7.4</version>
   <name>mollyb</name>
-  <description>a basic gemini protocol server</description>
-  <url>https://developer.augmentedlogic.com</url>
+  <description>gemini protocol server library</description>
+  <url>https://developer.augmentedlogic.com/project/mollyb</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -51,7 +51,7 @@
             <manifestEntries>
               <Built-By>Wolfgang Hauptfleisch</Built-By>
               <License>Apache License, Version 2.0</License>
-              <Vendor-Info>https://developer.augmentedlogic.com</Vendor-Info>
+              <Vendor-Info>https://developer.augmentedlogic.com/project/mollyb</Vendor-Info>
             </manifestEntries>
             <manifest>
               <addClasspath>true</addClasspath>
@@ -69,7 +69,7 @@
             <manifestEntries>
               <Built-By>Wolfgang Hauptfleisch</Built-By>
               <License>Apache License, Version 2.0</License>
-              <Vendor-Info>https://developer.augmentedlogic.com</Vendor-Info>
+              <Vendor-Info>https://developer.augmentedlogic.com/project/mollyb</Vendor-Info>
             </manifestEntries>
           </archive>
         </configuration>
@@ -92,7 +92,7 @@
             <manifestEntries>
               <Built-By>Wolfgang Hauptfleisch</Built-By>
               <License>Apache License, Version 2.0</License>
-              <Vendor-Info>https://developer.augmentedlogic.com</Vendor-Info>
+              <Vendor-Info>https://developer.augmentedlogic.com/project/mollyb</Vendor-Info>
             </manifestEntries>
           </archive>
         </configuration>
@@ -131,7 +131,7 @@
             <manifestEntries>
               <Built-By>Wolfgang Hauptfleisch</Built-By>
               <License>Apache License, Version 2.0</License>
-              <Vendor-Info>https://developer.augmentedlogic.com</Vendor-Info>
+              <Vendor-Info>https://developer.augmentedlogic.com/project/mollyb</Vendor-Info>
             </manifestEntries>
             <manifest>
               <addClasspath>true</addClasspath>

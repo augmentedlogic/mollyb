@@ -65,6 +65,12 @@ public class Response {
      **/
     public static final String MEDIA_GIF = "image/gif";
 
+    /**
+     * for convinience we add the logging object
+     **/
+    public LogTool log = new LogTool();
+
+
     private long filesize = 0;
     private String mimetype = "text/gemini";
     private String header = "20 text/gemini";
@@ -126,9 +132,11 @@ public class Response {
      * @param body the text to be added to the body
      */
     public void addBody(String body) {
-        String[] lines = body.split(System.getProperty("line.separator"));
-        for(String line: lines) {
-            this.payload_lines.add(line + "\r\n");
+        if(body != null) {
+            String[] lines = body.split(System.getProperty("line.separator"));
+            for(String line: lines) {
+                this.payload_lines.add(line + "\r\n");
+            }
         }
     }
 
