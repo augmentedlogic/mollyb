@@ -2,11 +2,13 @@
 port = 1965
 bind = localhost
 webroot = /var/www
+debug = 0
 
 ; setting a logfile is optional
-logfile = /path/to/access.log
+access_log = /path/to/access.log
+debug_log = /path/to/debug.log
 
 [security]
 keystore = /path/to/keystore.jks
 password = mysecret
-
+key_password = mysecret
